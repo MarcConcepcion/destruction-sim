@@ -44,6 +44,13 @@ export class CameraRig {
     this.controls.update();
   }
 
+  /** Move the camera to a given position/look-at point (used to frame wide structures). */
+  frame(position, target) {
+    this.camera.position.set(position[0], position[1], position[2]);
+    this.controls.target.set(target[0], target[1], target[2]);
+    this.controls.update();
+  }
+
   update(dt) {
     const k = this.keys;
     const f = (k.has('w') ? 1 : 0) - (k.has('s') ? 1 : 0);

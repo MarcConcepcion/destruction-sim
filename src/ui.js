@@ -9,7 +9,7 @@ import { CONFIG } from './config.js';
 import { PIECES } from './pieces.js';
 import { MATERIALS } from './materials.js';
 import { TOOLS } from './tools.js';
-import { PRESETS } from './presets.js';
+import { PRESETS, EGG_PRESET } from './presets.js';
 
 // ------------------------------------------------------------------ helpers ----
 function el(tag, props = {}, ...kids) {
@@ -161,8 +161,37 @@ export function createUI({ settings, actions }) {
   const matSeg = segmented(
     Object.entries(MATERIALS).map(([id, m]) => ({ id, label: m.name, swatch: m.swatch, tip: `${m.name}: density x${m.density}, friction ${m.friction}` })),
     () => settings.material,
-    (id) => { settings.material = id; },
+    (id) => { settings.material = id; eggClick(id); },
   );
+  // ---- Easter egg: click/tap the Wood material 5 times (each within 2.5 s of the last) ----
+  const EGG_KEY = 'demolition-lab.egg';
+  let eggClicks = 0;
+  let eggTimer = 0;
+  function eggUnlocked() {
+    try { return localStorage.getItem(EGG_KEY) === '1'; } catch { return false; }
+  }
+  function addEggButton(highlight) {
+    if (presetRow.querySelector('[data-egg]')) return;
+    const b = button(EGG_PRESET.name, { tip: `${EGG_PRESET.tip}. Replaces what you have built.`, onClick: () => actions.preset(EGG_PRESET.id) });
+    b.dataset.egg = '1';
+    presetRow.append(b);
+    if (highlight) {
+      b.classList.add('egg-new');
+      b.scrollIntoView?.({ block: 'nearest' });
+      setTimeout(() => b.classList.remove('egg-new'), 8000);
+    }
+  }
+  function eggClick(id) {
+    if (id !== 'wood' || eggUnlocked()) { eggClicks = 0; return; }
+    eggClicks++;
+    clearTimeout(eggTimer);
+    eggTimer = setTimeout(() => { eggClicks = 0; }, 2500);
+    if (eggClicks < 5) return;
+    eggClicks = 0;
+    try { localStorage.setItem(EGG_KEY, '1'); } catch { /* private mode: still unlocked for this visit */ }
+    addEggButton(true);
+    toast('Easter egg found! "KIM CANTOS" is now in Settings > Starter structures.', 'egg');
+  }
   const snapBtn = button('Grid snap', { tip: 'Snap placement to a 0.2 m grid (G)', onClick: () => actions.toggleSnap(), pressed: settings.snap });
   const qualitySeg = segmented(
     [
@@ -190,6 +219,11 @@ export function createUI({ settings, actions }) {
       }
     },
   });
+
+  const presetRow = el('div', { class: 'btn-row wrap' },
+    PRESETS.map((p) => button(p.name, { tip: `${p.tip}. Replaces what you have built.`, onClick: () => actions.preset(p.id) })),
+  );
+  if (eggUnlocked()) addEggButton(false); // remembered from an earlier visit
 
   panel.append(
     section('Simulation', 'always',
@@ -220,11 +254,7 @@ export function createUI({ settings, actions }) {
       ),
       el('div', { class: 'btn-row' }, clearBtn),
     ),
-    section('Starter structures', 'always',
-      el('div', { class: 'btn-row wrap' },
-        PRESETS.map((p) => button(p.name, { tip: `${p.tip}. Replaces what you have built.`, onClick: () => actions.preset(p.id) })),
-      ),
-    ),
+      section('Starter structures', 'always', presetRow),
     section('Graphics', 'always', qualitySeg),
   );
 

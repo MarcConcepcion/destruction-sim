@@ -13,7 +13,7 @@ import { Builder } from './builder.js';
 import { Tools, TOOLS } from './tools.js';
 import { PIECES, disposePieceGeometries } from './pieces.js';
 import { MATERIALS } from './materials.js';
-import { loadPreset, PRESETS } from './presets.js';
+import { loadPreset, PRESETS, EGG_PRESET } from './presets.js';
 import { Input } from './input.js';
 import { createUI } from './ui.js';
 
@@ -178,7 +178,9 @@ async function boot() {
     preset(id) {
       tools.clearAll();
       const n = loadPreset(id, structures);
-      const name = PRESETS.find((p) => p.id === id).name;
+          // The name is ~27 m wide: look down on it from above, shifted left so the panel doesn't cover it.
+      if (id === EGG_PRESET.id) rig.frame([-7, 36, 20], [-7, 0, 2]);
+      const name = [...PRESETS, EGG_PRESET].find((p) => p.id === id).name;
       ui.toast(`${name}: ${n} pieces`);
     },
     resetView() {

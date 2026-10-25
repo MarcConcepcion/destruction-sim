@@ -14,6 +14,51 @@ export const PRESETS = [
   { id: 'pyramid', name: 'Pyramid',    tip: 'A stepped pyramid of wooden cubes' },
 ];
 
+/** Easter egg: not in PRESETS, so it only appears in the UI after it is unlocked (see ui.js). */
+export const EGG_PRESET = { id: 'kimcantos', name: 'KIM CANTOS', tip: 'Secret: the name in wooden blocks, two blocks thick' };
+
+// 5x7 pixel font for the letters we need ('X' = a block).
+const FONT = {
+  K: ['X...X', 'X..X.', 'X.X..', 'XX...', 'X.X..', 'X..X.', 'X...X'],
+  I: ['XXXXX', '..X..', '..X..', '..X..', '..X..', '..X..', 'XXXXX'],
+  M: ['X...X', 'XX.XX', 'X.X.X', 'X.X.X', 'X...X', 'X...X', 'X...X'],
+  C: ['.XXX.', 'X...X', 'X....', 'X....', 'X....', 'X...X', '.XXX.'],
+  A: ['.XXX.', 'X...X', 'X...X', 'XXXXX', 'X...X', 'X...X', 'X...X'],
+  N: ['X...X', 'XX..X', 'X.X.X', 'X.X.X', 'X..XX', 'X...X', 'X...X'],
+  T: ['XXXXX', '..X..', '..X..', '..X..', '..X..', '..X..', '..X..'],
+  O: ['.XXX.', 'X...X', 'X...X', 'X...X', 'X...X', 'X...X', '.XXX.'],
+  S: ['.XXXX', 'X....', 'X....', '.XXX.', '....X', '....X', 'XXXX.'],
+};
+
+/**
+ * The letters lie flat on the ground like a mosaic (so every block is supported
+ * and nothing floats), two blocks thick, read from the default camera. "KIM"
+ * is the far line, "CANTOS" the near line.
+ */
+function kimcantos(add) {
+  const c = PIECE_BY_ID.cube.shape.size[0];
+  const lines = ['KIM', 'CANTOS'];
+  const LAYERS = 2;
+  const lineGap = 2; // blank rows between the two lines
+  const rowsPerLine = 7;
+  const totalRows = lines.length * rowsPerLine + lineGap;
+  lines.forEach((word, li) => {
+    const cols = word.length * 5 + (word.length - 1); // 1 blank column between letters
+    const z0 = (li * (rowsPerLine + lineGap) - (totalRows - 1) / 2) * c;
+    [...word].forEach((ch, i) => {
+      FONT[ch].forEach((row, r) => {
+        [...row].forEach((px, col) => {
+          if (px !== 'X') return;
+          const x = (i * 6 + col - (cols - 1) / 2) * c;
+          for (let l = 0; l < LAYERS; l++) {
+            add('cube', 'wood', { x, y: c / 2 + l * (c + GAP), z: z0 + r * c }, 0);
+          }
+        });
+      });
+    });
+  });
+}
+
 function wall(add) {
   const [L, H] = PIECE_BY_ID.brick.shape.size;
   const perRow = 8;
@@ -66,7 +111,7 @@ function pyramid(add) {
   }
 }
 
-const BUILDERS = { wall, tower, pyramid };
+const BUILDERS = { wall, tower, pyramid, kimcantos };
 
 /**
  * Replace everything with a preset. Returns how many pieces were created.

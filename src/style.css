@@ -165,6 +165,9 @@ kbd { display: inline-block; min-width: 18px; padding: 1px 5px; margin-right: 2p
 #toasts { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; }
 .toast { padding: 8px 14px; border-radius: 10px; background: rgba(12, 14, 17, 0.92); border: 1px solid var(--line); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4); font-weight: 600; animation: toast-in 0.18s ease-out; transition: opacity 0.3s, transform 0.3s; }
 .toast.warn { border-color: var(--amber); color: var(--amber); }
+.toast.egg { border-color: var(--amber); color: var(--amber); }
+.btn.egg-new { border-color: var(--amber); color: var(--amber); animation: egg-pulse 1s ease-in-out infinite; }
+@keyframes egg-pulse { 50% { box-shadow: 0 0 0 4px rgba(255, 194, 26, 0.35); } }
 .toast.out { opacity: 0; transform: translateY(-6px); }
 @keyframes toast-in { from { opacity: 0; transform: translateY(-6px); } }
 

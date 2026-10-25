@@ -1,11 +1,11 @@
-# Demolition Lab
+# Demolition Lab (Pre-Alpha V0.1.0)
 
 ![Alt Text](https://i.redd.it/aqiy5823tvaf1.gif)
 
 
 A browser-based 3D physics destruction sandbox. Build towers, walls and pyramids from bricks, planks, beams, columns and slabs, then bring them down with a cannon, a heavy drop or a swinging wrecking ball. Everything that falls, tumbles or breaks is real rigid-body physics ([Rapier](https://rapier.rs)) rendered with [Three.js](https://threejs.org) - no scripted collapses.
 
-Runs entirely in the browser: no backend, no account, no paid services.
+Runs entirely in the browser: no backend, no account, no paid services. (NOTE WILL ADD MOBILE SUPPORT)
 
 ## How to play
 
@@ -39,8 +39,3 @@ Pointer input is bound to the 3D canvas only and shortcuts ignore text fields, s
 - **Budgets** (in `src/config.js`): 600 pieces, 40 projectiles (oldest are removed first), and bodies that fall out of the world are removed or disabled. Geometries and materials are shared; removed meshes and WASM bodies are freed.
 - **Low-end GPUs**: a Quality setting (shadows/pixel ratio). If the frame rate stays under 28 fps the game switches to Low once and tells you.
 - **Trade-off**: pieces are rigid and do not fracture. "Destruction" is structures collapsing and scattering from impacts, which keeps the simulation stable and fast in a browser. Rapier's compat build embeds its WASM as base64, so the physics chunk is large but cached separately from game code.
-
-npm run build && npm run test:e2e
-```
-
-The e2e test serves `dist/` under a `/demolition-lab/` sub-path (like GitHub Pages), drives the real UI in headless Chromium with software WebGL, and checks building, destruction, pause, slow motion, restore, bounded object counts after repeated destruction, and the absence of console errors and 404s.

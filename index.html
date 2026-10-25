@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#14181d" />
+    <title>Demolition Lab - 3D Physics Destruction Sandbox</title>
+    <meta
+      name="description"
+      content="Build towers from bricks, planks and columns, then bring them down with a cannon, a heavy drop or a wrecking ball. Real rigid-body physics in your browser."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script type="module" src="/src/main.js"></script>
+  </head>
+  <body>
+    <div id="app" data-mode="build">
+      <canvas id="scene" tabindex="0" aria-label="3D simulation view"></canvas>
+
+      <div id="loading" role="status">
+        <div class="loading-mark"></div>
+        <p>Loading physics engine&hellip;</p>
+      </div>
+
+      <div id="hud" hidden>
+        <header id="topbar">
+          <div class="brand"><span class="brand-mark" aria-hidden="true"></span><b>DEMOLITION</b>&nbsp;LAB</div>
+          <div id="status" class="pill" data-state="running" aria-live="polite">RUNNING</div>
+          <dl id="stats" class="stats">
+            <div data-tip="Construction pieces placed / limit"><dt>Pieces</dt><dd data-stat="pieces">0</dd></div>
+            <div data-tip="Projectiles in the world / limit (oldest are removed first)"><dt>Shots</dt><dd data-stat="shots">0</dd></div>
+            <div data-tip="Bodies currently moving (resting bodies sleep and cost almost nothing)"><dt>Moving</dt><dd data-stat="awake">0</dd></div>
+            <div data-tip="Gravity (m/s&sup2;)"><dt>Gravity</dt><dd data-stat="gravity">9.8</dd></div>
+            <div data-tip="Simulation speed"><dt>Speed</dt><dd data-stat="speed">1.00&times;</dd></div>
+            <div data-tip="Rendered frames per second"><dt>FPS</dt><dd data-stat="fps">60</dd></div>
+          </dl>
+          <button id="panel-toggle" class="icon-btn" aria-controls="panel" aria-expanded="false" data-tip="Settings">Settings</button>
+          <button id="guide-toggle" class="icon-btn" aria-controls="guide" aria-expanded="true" data-tip="Controls guide (H)">?</button>
+        </header>
+
+        <aside id="panel" aria-label="Settings"></aside>
+
+        <section id="guide" aria-label="Controls guide">
+          <h2>Controls</h2>
+          <table>
+            <tbody>
+              <tr><th>Click</th><td>Place a piece / fire the tool</td></tr>
+              <tr><th>Drag</th><td>Orbit the camera</td></tr>
+              <tr><th>Right-drag</th><td>Pan</td></tr>
+              <tr><th>Wheel</th><td>Zoom</td></tr>
+              <tr><th><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></th><td>Move camera (<kbd>Shift</kbd> = fast)</td></tr>
+              <tr><th><kbd>B</kbd> / <kbd>X</kbd></th><td>Build / Destroy mode (<kbd>Tab</kbd> toggles)</td></tr>
+              <tr><th><kbd>1</kbd>&ndash;<kbd>8</kbd></th><td>Pick piece (8 = erase) or tool</td></tr>
+              <tr><th><kbd>Q</kbd> <kbd>E</kbd></th><td>Rotate piece 90&deg; (<kbd>Shift</kbd> = 15&deg;)</td></tr>
+              <tr><th><kbd>F</kbd></th><td>Tilt piece onto its side</td></tr>
+              <tr><th><kbd>G</kbd></th><td>Grid snap on / off</td></tr>
+              <tr><th><kbd>Space</kbd></th><td>Pause / resume</td></tr>
+              <tr><th><kbd>M</kbd></th><td>Slow motion on / off</td></tr>
+              <tr><th><kbd>R</kbd></th><td>Restore the built layout</td></tr>
+              <tr><th><kbd>C</kbd></th><td>Clear projectiles</td></tr>
+              <tr><th><kbd>Ctrl</kbd>+<kbd>Z</kbd></th><td>Undo last piece</td></tr>
+              <tr><th><kbd>Home</kbd></th><td>Reset camera</td></tr>
+              <tr><th><kbd>H</kbd></th><td>Show / hide this guide</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <div id="info" aria-live="off"></div>
+        <nav id="toolbar" aria-label="Tools"></nav>
+        <div id="toasts" aria-live="polite"></div>
+      </div>
+
+      <div id="fatal" role="alert" hidden>
+        <div class="fatal-card">
+          <h1 id="fatal-title">Something went wrong</h1>
+          <p id="fatal-text"></p>
+          <button id="fatal-reload" class="btn">Reload</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
